@@ -1,25 +1,22 @@
-export default async function handler(req, res) {
-    if (req.method !== "POST") {
-        return res.status(405).json({ message: "Method not allowed" });
+module.exports = async function handler(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ message: 'Method not allowed' });
     }
 
     try {
-        const { consent } = req.body;
+        const { consentAccepted } = req.body;
 
-        if (!consent) {
-            return res.status(400).json({ message: "Consent required" });
+        if (!consentAccepted) {
+            return res.status(400).json({ message: 'Consent required' });
         }
 
-        const referralUrl = "https://gmtrade.ai/?ref=YOUR_REF_CODE";
+        const referralUrl = 'https://gmtrade.xyz/referrals/?ref=mtb';
 
         return res.status(200).json({
             success: true,
-            redirect: referralUrl,
+            referralUrl,
         });
-
     } catch (error) {
-        return res.status(500).json({
-            message: "Server error",
-        });
+        return res.status(500).json({ message: 'Server error' });
     }
-}
+};
