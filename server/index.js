@@ -12,14 +12,18 @@ app.use(express.json());
 
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log('mongodb connected'))
+  .then(() => console.log('connected to mongodb'))
   .catch((err) => console.error('mongodb connection error:', err.message));
 
 const clickSchema = new mongoose.Schema(
   {
-    source: { type: String, default: 'landing-page' },
+    source: { type: String, default: 'google' },
     ip: { type: String, default: '' },
     userAgent: { type: String, default: '' },
+    consentAccepted: { type: Boolean, default: false },
+    consentVersion: { type: String, default: 'v1' },
+    consentText: { type: String, default: '' },
+    consentAcceptedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
@@ -32,10 +36,21 @@ app.get('/api/health', (req, res) => {
 
 app.post('/api/referral-click', async (req, res) => {
   try {
+    if (!req.body.consentAccepted) {
+      return res.status(400).json({
+        ok: false,
+        error: 'consent is required before continuing',
+      });
+    }
+
     await Click.create({
-      source: req.body.source || 'landing-page',
+      source: req.body.source || 'google',
       ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || '',
       userAgent: req.headers['user-agent'] || '',
+      consentAccepted: true,
+      consentVersion: req.body.consentVersion || 'v1',
+      consentText: req.body.consentText || '',
+      consentAcceptedAt: new Date(),
     });
 
     res.json({
