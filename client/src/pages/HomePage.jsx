@@ -22,7 +22,7 @@ function HomePage() {
       return;
     }
 
-    const newTab = window.open('', '_blank', 'noopener,noreferrer');
+    const newTab = window.open('about:blank', '_blank');
 
     try {
       setLoading(true);
@@ -38,7 +38,7 @@ function HomePage() {
       });
 
       if (newTab) {
-        newTab.location.href = res.data.referralUrl;
+        newTab.location.replace(res.data.referralUrl);
       } else {
         window.location.href = res.data.referralUrl;
       }
