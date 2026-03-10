@@ -59,12 +59,11 @@ function HomePage() {
         <span className="kicker">Crypto platform gateway</span>
 
         <h1>
-          Welcome to your
-          <br />
-          <span>GMTRADE</span>
-          <br />
-          access page
+          Your Gateway to <span>GMTRADE</span>
         </h1>
+        <p className="hero-text">
+          Secure access through our verified referral link.
+        </p>
 
         <p className="hero-text">
           A clean gateway to the official GMTRADE registration page through my referral
