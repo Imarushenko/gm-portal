@@ -37,19 +37,24 @@ function HomePage() {
         consentText,
       });
 
+      console.log('api response:', res.data);
+
+      const targetUrl =
+        res?.data?.referralUrl || 'https://gmtrade.xyz/referrals/?ref=mtb';
+
       if (newTab) {
-        newTab.location.replace(res.data.referralUrl);
+        newTab.location.href = targetUrl;
       } else {
-        window.location.href = res.data.referralUrl;
+        window.location.href = targetUrl;
       }
     } catch (err) {
       console.error(err);
 
       if (newTab) {
-        newTab.close();
+        newTab.location.href = 'https://gmtrade.xyz/referrals/?ref=mtb';
+      } else {
+        window.location.href = 'https://gmtrade.xyz/referrals/?ref=mtb';
       }
-
-      setError('failed to continue, please try again');
     } finally {
       setLoading(false);
     }
