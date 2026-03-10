@@ -25,6 +25,14 @@ const clickSchema = new mongoose.Schema(
 const Click = mongoose.models.Click || mongoose.model('Click', clickSchema);
 
 module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', 'https://gm-portal.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({
       ok: false,
@@ -33,7 +41,14 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    if (!req.body.consentAccepted) {
+    if (!process.env.MONGO_URI) {
+      return res.status(500).json({
+        ok: false,
+        error: 'missing MONGO_URI',
+      });
+    }
+
+    if (!req.body?.consentAccepted) {
       return res.status(400).json({
         ok: false,
         error: 'consent is required before continuing',
@@ -61,7 +76,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(500).json({
       ok: false,
-      error: 'failed to save click',
+      error: err.message || 'failed to save click',
     });
   }
 };
