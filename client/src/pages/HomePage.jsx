@@ -22,6 +22,8 @@ function HomePage() {
       return;
     }
 
+    const newTab = window.open('', '_blank', 'noopener,noreferrer');
+
     try {
       setLoading(true);
       setError('');
@@ -35,9 +37,18 @@ function HomePage() {
         consentText,
       });
 
-      window.open(res.data.referralUrl, '_blank', 'noopener,noreferrer');
+      if (newTab) {
+        newTab.location.href = res.data.referralUrl;
+      } else {
+        window.location.href = res.data.referralUrl;
+      }
     } catch (err) {
       console.error(err);
+
+      if (newTab) {
+        newTab.close();
+      }
+
       setError('failed to continue, please try again');
     } finally {
       setLoading(false);
