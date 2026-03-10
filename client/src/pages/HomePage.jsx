@@ -22,54 +22,23 @@ function HomePage() {
       return;
     }
 
-    const newTab = window.open('about:blank', '_blank');
+    const referralUrl = 'https://gmtrade.xyz/referrals/?ref=mtb';
+    const apiUrl = import.meta.env.VITE_API_URL;
 
-    if (newTab) {
-      newTab.document.write(`
-    <html>
-      <head><title>Redirecting...</title></head>
-      <body style="font-family: Arial, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; background:#0b1020; color:white;">
-        <div style="text-align:center;">
-          <h2>Redirecting to GMTRADE...</h2>
-          <p>Please wait a few seconds.</p>
-        </div>
-      </body>
-    </html>
-  `);
-      newTab.document.close();
-    }
+    window.open(referralUrl, '_blank');
 
     try {
       setLoading(true);
       setError('');
 
-      const apiUrl = import.meta.env.VITE_API_URL;
-
-      const res = await axios.post(`${apiUrl}/api/referral-click`, {
+      await axios.post(`${apiUrl}/api/referral-click`, {
         source: 'google',
         consentAccepted: true,
         consentVersion: 'v1',
         consentText,
       });
-
-      console.log('api response:', res.data);
-
-      const targetUrl =
-        res?.data?.referralUrl || 'https://gmtrade.xyz/referrals/?ref=mtb';
-
-      if (newTab) {
-        newTab.location.href = targetUrl;
-      } else {
-        window.location.href = targetUrl;
-      }
     } catch (err) {
-      console.error(err);
-
-      if (newTab) {
-        newTab.location.href = 'https://gmtrade.xyz/referrals/?ref=mtb';
-      } else {
-        window.location.href = 'https://gmtrade.xyz/referrals/?ref=mtb';
-      }
+      console.error('tracking failed:', err);
     } finally {
       setLoading(false);
     }
