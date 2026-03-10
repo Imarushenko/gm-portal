@@ -24,6 +24,21 @@ function HomePage() {
 
     const newTab = window.open('about:blank', '_blank');
 
+    if (newTab) {
+      newTab.document.write(`
+    <html>
+      <head><title>Redirecting...</title></head>
+      <body style="font-family: Arial, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; background:#0b1020; color:white;">
+        <div style="text-align:center;">
+          <h2>Redirecting to GMTRADE...</h2>
+          <p>Please wait a few seconds.</p>
+        </div>
+      </body>
+    </html>
+  `);
+      newTab.document.close();
+    }
+
     try {
       setLoading(true);
       setError('');
